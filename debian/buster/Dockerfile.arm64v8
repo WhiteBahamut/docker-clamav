@@ -8,7 +8,7 @@ FROM arm64v8/debian:buster-slim as release
 LABEL maintainer="Markus Kosmal <code@m-ko.de>"
 
 # copy qmeu
-COPY --from=qemu qemu-arm-static /usr/bin
+COPY --from=qemu qemu-aarch64-static /usr/bin
 
 # Debian Base to use
 ENV DEBIAN_VERSION buster
@@ -50,17 +50,16 @@ RUN sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/clamd.conf && \
 
 # env based configs - will be called by bootstrap.sh
 COPY envconfig.sh /
-
 COPY check.sh /
+COPY bootstrap.sh /
 
 # volume provision
-VOLUME ["/var/lib/clamav"]
+
 
 # port provision
 EXPOSE 3310
 
-# av daemon bootstrapping
-COPY bootstrap.sh /
+RUN chmod u+x bootstrap.sh check.sh envconfig.sh
 CMD ["/bootstrap.sh"]
 
 HEALTHCHECK --start-period=500s CMD /check.sh

@@ -1,0 +1,28 @@
+FROM alpine AS qemu
+
+#QEMU Download
+ENV QEMU_URL https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-aarch64.tar.gz
+RUN apk add curl && curl -L ${QEMU_URL} | tar zxvf - -C . --strip-components 1
+
+FROM arm64v8/alpine:3.12 as release
+LABEL maintainer="Markus Kosmal <code@m-ko.de>"
+
+# copy qmeu
+COPY --from=qemu qemu-aarch64-static /usr/bin
+
+RUN apk add --no-cache bash clamav rsyslog wget clamav-libunrar
+
+COPY conf /etc/clamav
+COPY bootstrap.sh /
+COPY check.sh /
+
+RUN chmod u+x bootstrap.sh check.sh
+RUN mkdir /var/run/clamav && \
+    chown clamav:clamav /var/run/clamav && \
+    chmod 750 /var/run/clamav
+
+EXPOSE 3310/tcp
+
+CMD ["/bootstrap.sh"]
+
+HEALTHCHECK --start-period=120s CMD /check.sh

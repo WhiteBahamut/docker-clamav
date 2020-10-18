@@ -1,8 +1,8 @@
-FROM debian:buster-slim
+FROM debian:stretch-slim
 LABEL maintainer="Markus Kosmal <code@m-ko.de>"
 
 # Debian Base to use
-ENV DEBIAN_VERSION buster
+ENV DEBIAN_VERSION stretch
 
 # initial install of av daemon
 RUN echo "deb http://http.debian.net/debian/ $DEBIAN_VERSION main contrib non-free" > /etc/apt/sources.list && \
@@ -13,8 +13,6 @@ RUN echo "deb http://http.debian.net/debian/ $DEBIAN_VERSION main contrib non-fr
         clamav-daemon \
         clamav-freshclam \
         libclamunrar9 \
-        ca-certificates \
-        netcat-openbsd \
         wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -33,16 +31,9 @@ RUN mkdir /var/run/clamav && \
 # av configuration update
 RUN sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/clamd.conf && \
     echo "TCPSocket 3310" >> /etc/clamav/clamd.conf && \
-    if [ -n "$HTTPProxyServer" ]; then echo "HTTPProxyServer $HTTPProxyServer" >> /etc/clamav/freshclam.conf; fi && \
-    if [ -n "$HTTPProxyPort"   ]; then echo "HTTPProxyPort $HTTPProxyPort" >> /etc/clamav/freshclam.conf; fi && \
-    if [ -n "$DatabaseMirror"  ]; then echo "DatabaseMirror $DatabaseMirror" >> /etc/clamav/freshclam.conf; fi && \
-    if [ -n "$DatabaseMirror"  ]; then echo "ScriptedUpdates off" >> /etc/clamav/freshclam.conf; fi && \
+    if ! [ -z $HTTPProxyServer ]; then echo "HTTPProxyServer $HTTPProxyServer" >> /etc/clamav/freshclam.conf; fi && \
+    if ! [ -z $HTTPProxyPort   ]; then echo "HTTPProxyPort $HTTPProxyPort" >> /etc/clamav/freshclam.conf; fi && \
     sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/freshclam.conf
-
-# env based configs - will be called by bootstrap.sh
-COPY envconfig.sh /
-COPY check.sh /
-COPY bootstrap.sh /
 
 # volume provision
 
@@ -50,8 +41,8 @@ COPY bootstrap.sh /
 # port provision
 EXPOSE 3310
 
-RUN chmod u+x bootstrap.sh check.sh envconfig.sh
+# av daemon bootstrapping
+ADD bootstrap.sh /
+RUN chmod u+x bootstrap.sh
 
 CMD ["/bootstrap.sh"]
-
-HEALTHCHECK --start-period=500s CMD /check.sh
