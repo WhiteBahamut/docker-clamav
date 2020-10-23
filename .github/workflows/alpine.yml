@@ -43,6 +43,7 @@ jobs:
         with:
           tags: whitebahamut/docker-clamav:alpine
           file: ./alpine/main/Dockerfile
+          context: ./alpine/main
           push: true
  
       - name: arm32
@@ -50,6 +51,7 @@ jobs:
         with:
           tags: whitebahamut/docker-clamav:alpine-arm32v7
           file: ./alpine/main/Dockerfile.arm32v7
+          context: ./alpine/main
           push: true
 
       - name: arm64
@@ -57,6 +59,7 @@ jobs:
         with:
           tags: whitebahamut/docker-clamav:alpine-arm64v8
           file: ./alpine/main/Dockerfile.arm64v8
+          context: ./alpine/main
           push: true
 
       - name: Push manifest
