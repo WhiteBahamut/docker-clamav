@@ -23,36 +23,40 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Prepare for QEMU
-        run: sh -c "docker run --rm --privileged multiarch/qemu-user-static:register --reset"
+      - name: Docker Setup QEMU
+        # You may pin to the exact commit or the version.
+        # uses: docker/setup-qemu-action@6520a2d2cb6db42c90c297c8025839c98e531268
+        uses: docker/setup-qemu-action@v1.0.1
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUBUSERNAME }}
+          password: ${{ secrets.DOCKERHUBTOKEN }}
         
       - name: amd64
         # You may pin to the exact commit or the version.
         # uses: docker/build-push-action@ab83648e2e224cfeeab899e23b639660765c3a89
         uses: docker/build-push-action@v2.0.0
         with:
-          github-token: ${DockerHubToken}
-          repository: whitebahamut
           tags: whitebahamut/docker-clamav:alpine
-          file: ./aline/main/Dockerfile
+          file: ./alpine/main/Dockerfile
           push: true
  
       - name: arm32
         uses: docker/build-push-action@v2.0.0
         with:
-          github-token: ${DockerHubToken}
-          repository: whitebahamut
           tags: whitebahamut/docker-clamav:alpine-arm32v7
-          file: ./aline/main/Dockerfile.arm32v7
+          file: ./alpine/main/Dockerfile.arm32v7
           push: true
 
       - name: arm64
         uses: docker/build-push-action@v2.0.0
         with:
-          github-token: ${DockerHubToken}
-          repository: whitebahamut
           tags: whitebahamut/docker-clamav:alpine-arm64v8
-          file: ./aline/main/Dockerfile.arm64v8
+          file: ./alpine/main/Dockerfile.arm64v8
           push: true
 
       - name: Push manifest
