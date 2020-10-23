@@ -66,4 +66,4 @@ jobs:
         run: | 
           curl -Lo manifest-tool https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64
           chmod +x manifest-tool
-          ./manifest-tool push from-args --platforms linux/amd64,linux/arm/v7,linux/arm64/v8 --template whitebahamut/docker-clamav:alpine-ARCHVARIANT --target whitebahamut/docker-clamav:alpine
+          ./manifest-tool push from-args --platforms "linux/amd64,linux/arm/v7,linux/arm64/v8" --template whitebahamut/docker-clamav:alpine-ARCHVARIANT --target whitebahamut/docker-clamav:alpine
