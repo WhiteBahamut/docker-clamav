@@ -29,34 +29,31 @@ jobs:
       - name: amd64
         # You may pin to the exact commit or the version.
         # uses: docker/build-push-action@ab83648e2e224cfeeab899e23b639660765c3a89
-        uses: docker/build-push-action@v1.1.1
+        uses: docker/build-push-action@v2.0.0
         with:
-          username: whitebahamut
-          password: ${DockerHubToken}
+          github-token: ${DockerHubToken}
           repository: whitebahamut
-          tags: alpine
-          path: aline/main
-          dockerfile: Dockerfile
+          tags: whitebahamut/docker-clamav:alpine
+          file: ./aline/main/Dockerfile
+          push: true
  
       - name: arm32
-        uses: docker/build-push-action@v1.1.1
+        uses: docker/build-push-action@v2.0.0
         with:
-          username: whitebahamut
-          password: ${DockerHubToken}
+          github-token: ${DockerHubToken}
           repository: whitebahamut
-          tags: alpine-arm32v7
-          path: aline/main
-          dockerfile: Dockerfile.arm32v7
+          tags: whitebahamut/docker-clamav:alpine-arm32v7
+          file: ./aline/main/Dockerfile.arm32v7
+          push: true
 
       - name: arm64
-        uses: docker/build-push-action@v1.1.1
+        uses: docker/build-push-action@v2.0.0
         with:
-          username: whitebahamut
-          password: ${DockerHubToken}
+          github-token: ${DockerHubToken}
           repository: whitebahamut
-          tags: alpine-arm64v8
-          path: aline/main
-          dockerfile: Dockerfile.arm64v8
+          tags: whitebahamut/docker-clamav:alpine-arm64v8
+          file: ./aline/main/Dockerfile.arm64v8
+          push: true
 
       - name: Push manifest
         run: curl -Lo manifest-tool https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64 && chmod +x manifest-tool && ./manifest-tool push from-args --platforms linux/amd64,linux/arm/v7,linux/arm64/v8 --template whitebahamut/docker-clamav:alpine-ARCHVARIANT --target whitebahamut/docker-clamav:alpine
