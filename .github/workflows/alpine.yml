@@ -63,7 +63,8 @@ jobs:
           push: true
 
       - name: run manifest tool
-        run: | 
+        run: |
+          docker image ls 
           curl -Lo manifest-tool https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64
           chmod +x manifest-tool
           ./manifest-tool push from-args \
