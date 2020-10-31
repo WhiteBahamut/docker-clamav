@@ -54,7 +54,7 @@ jobs:
         with:
           tags: |
             whitebahamut/docker-clamav:${{ steps.gitversion.outputs.semVer }}-alpine-edge         
-            whitebahamut/docker-clamav:alpine
+            whitebahamut/docker-clamav:alpine-edge
           file: ./alpine/edge/Dockerfile
           context: ./alpine/edge
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
