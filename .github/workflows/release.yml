@@ -7,8 +7,6 @@ name: alpine-main
 on:
   push:
     branches: [ master ]
-    paths:
-      - "alpine/main/**"
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
